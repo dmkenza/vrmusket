@@ -1,0 +1,17 @@
+{
+	"required": true,
+	"package": "com.vrmusket.mixin.client",
+	"compatibilityLevel": "JAVA_17",
+	"client": [
+		"BulletRendererMixin",
+		"ItemInHandRendererMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"mixins": [
+		"GunItemMixin",
+		"VivecraftItemRenderingMixin",
+		"VRArmHelperMixin"
+	]
+}

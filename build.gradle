@@ -1,0 +1,110 @@
+plugins {
+    id 'fabric-loom' version "${loom_version}"
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+loom {
+    splitEnvironmentSourceSets()
+
+    mods {
+        "vrmusket" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+
+    accessWidenerPath = file("src/main/resources/vrmusket.aw")
+}
+
+
+repositories {
+    maven {
+        name = "Modrinth"
+        url = uri("https://api.modrinth.com/maven")
+    }
+    maven {
+        url = uri("https://jitpack.io")
+    }
+    maven {
+        url = "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
+dependencies {
+
+    fileTree(dir: 'libs', include: ['*.jar']).each { File jar ->
+        modImplementation files(jar)
+    }
+
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    mappings loom.officialMojangMappings()
+
+    modImplementation("curse.maven:ewewukeks-musket-mod-354562:5805562") { transitive = false }
+    modImplementation("curse.maven:emi-580555:6420944") { transitive = false }
+    modImplementation("curse.maven:modmenu-308702:5162837") { transitive = false }
+
+    // Vivecraft dependency
+    modImplementation("curse.maven:vivecraft-667903:6208686") { transitive = false }
+    modImplementation("curse.maven:hapticcraft-1073389:6632177") { transitive = false }
+    implementation("curse.maven:fabric-language-kotlin-308769:6985480") { transitive = false }
+    modImplementation("curse.maven:ldlib-626676:6995782") { transitive = false }
+    modImplementation("curse.maven:cloth-config-348521:5729104") { transitive = false }
+
+    modImplementation "com.electronwill.night-config:core:3.6.6"
+    modImplementation "com.electronwill.night-config:toml:3.6.6"
+    modImplementation "org.lwjgl:lwjgl-openvr:3.3.1"
+    modImplementation "org.lwjgl:lwjgl-openvr:3.3.1:natives-windows"
+    implementation("com.illposed.osc:javaosc-core:0.9")
+
+    // GregTech dependency
+    modImplementation("maven.modrinth:gregtechceu-modern:mc1.19.2-1.0.20.b-fabric")
+}
+
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": inputs.properties.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 17
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+jar {
+    inputs.property "archivesName", project.base.archivesName
+
+    from("LICENSE") {
+        rename { "${it}_${inputs.properties.archivesName}" }
+    }
+}
+
+publishing {
+    publications {
+        create("mavenJava", MavenPublication) {
+            artifactId = project.archives_base_name
+            from components.java
+        }
+    }
+    repositories {
+    }
+}
