@@ -3,7 +3,7 @@
 	"id": "vrmusket",
 	"version": "${version}",
 	"name": "VRMusket",
-	"description": "Adapts the Musket Mod for Vivecraft. Adds proper visuals, reload and melee animations, and fixes some bugs from the original mod.",
+	"description": "Adapts the Musket Mod for Vivecraft. Adds visuals, reload and melee animations, and fixes some bugs from the original mod.",
 	"authors": [
 		"Kinoman"
 	],
